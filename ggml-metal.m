@@ -206,6 +206,8 @@ struct ggml_metal_context * ggml_metal_init(int n_cb) {
 #endif
         NSError * error = nil;
         NSString * libPath = [bundle pathForResource:@"default" ofType:@"metallib"];
+            GGML_METAL_LOG_INFO("%s: ###libPath : '%s'\n", __func__, [libPath UTF8String]);
+
         if (libPath != nil) {
             NSURL * libURL = [NSURL fileURLWithPath:libPath];
             GGML_METAL_LOG_INFO("%s: loading '%s'\n", __func__, [libPath UTF8String]);
@@ -215,11 +217,14 @@ struct ggml_metal_context * ggml_metal_init(int n_cb) {
 
             NSString * sourcePath;
             NSString * ggmlMetalPathResources = [[NSProcessInfo processInfo].environment objectForKey:@"GGML_METAL_PATH_RESOURCES"];
+
+            GGML_METAL_LOG_INFO("%s: ### ggmlMetalPathResources : '%s'\n", __func__, [ggmlMetalPathResources UTF8String]);
             if (ggmlMetalPathResources) {
                 sourcePath = [ggmlMetalPathResources stringByAppendingPathComponent:@"ggml-metal.metal"];
             } else {
                 sourcePath = [bundle pathForResource:@"ggml-metal" ofType:@"metal"];
             }
+            GGML_METAL_LOG_INFO("%s: ### sourcePath : '%s'\n", __func__, [sourcePath UTF8String]);
             if (sourcePath == nil) {
                 GGML_METAL_LOG_WARN("%s: error: could not use bundle path to find ggml-metal.metal, falling back to trying cwd\n", __func__);
                 sourcePath = @"ggml-metal.metal";
